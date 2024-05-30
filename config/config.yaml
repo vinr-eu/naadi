@@ -1,0 +1,5 @@
+receivers:
+  - name: "payment-service"
+    notification_url: "http://payment-service/api/notify"
+  - name: "account-service"
+    notification_url: "http://account-service/api/notify"
