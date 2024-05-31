@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/vinr-eu/naadi/internal/domain/event"
 	"github.com/vinr-eu/naadi/internal/handler/notifier"
 	"github.com/vinr-eu/naadi/internal/handler/receiver"
 	"log/slog"
@@ -14,6 +15,11 @@ import (
 )
 
 func main() {
+	if err := event.Init(); err != nil {
+		slog.Error("Event store load failed", "err", err)
+		os.Exit(1)
+	}
+
 	idleConnectionsClosed := make(chan struct{})
 
 	mux := http.NewServeMux()

@@ -52,6 +52,12 @@ func ReceiveEvents(w http.ResponseWriter, r *http.Request) {
 		event.ServiceOffsets[serviceName] = offset + int64(len(events))
 	}
 
+	// Save offsets to file
+	if err = event.SaveOffsets(); err != nil {
+		http.Error(w, "Failed to save offsets", http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(events)
 }

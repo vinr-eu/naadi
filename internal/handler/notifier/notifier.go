@@ -39,5 +39,11 @@ func NotifyEvent(w http.ResponseWriter, r *http.Request) {
 	event.Store[newOffset] = entity
 	event.IdempotencyKeys[idempotencyKey] = true
 
+	// Save store to file
+	if err := event.SaveStore(); err != nil {
+		http.Error(w, "Failed to save store", http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusNoContent)
 }

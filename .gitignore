@@ -26,3 +26,7 @@ go.work.sum
 *.ipr
 *.iml
 *.iws
+
+# Naadi temp files
+/event_store.json
+/service_offsets.json
