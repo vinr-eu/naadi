@@ -1,0 +1,12 @@
+GET http://localhost:8080/events?service=emailer&limit=5
+Accept: application/json
+
+###
+POST http://localhost:8080/events
+Content-Type: application/json
+Idempotency-Key: 5
+
+{
+  "name": "User.Created",
+  "entityId": "5"
+}

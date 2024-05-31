@@ -4,7 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/vinr-eu/naadi/internal/config"
+	"github.com/vinr-eu/naadi/internal/handler/notifier"
+	"github.com/vinr-eu/naadi/internal/handler/receiver"
 	"log/slog"
 	"net/http"
 	"os"
@@ -13,30 +14,15 @@ import (
 )
 
 func main() {
-	cfg := loadConfig()
-	slog.Info("Config loaded", "receivers", len(cfg.Receivers))
-
 	idleConnectionsClosed := make(chan struct{})
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("POST /events", notifier.NotifyEvent)
+	mux.HandleFunc("GET /events", receiver.ReceiveEvents)
 
 	startHTTPServer(mux, idleConnectionsClosed)
 
 	<-idleConnectionsClosed
-}
-
-func loadConfig() config.Config {
-	configPath := "config/config.yaml"
-	if os.Getenv("CONFIG_PATH") != "" {
-		configPath = os.Getenv("CONFIG_PATH")
-	}
-
-	cfg, err := config.LoadConfig(configPath)
-	if err != nil {
-		slog.Error("Failed to load config", "err", err)
-		os.Exit(1)
-	}
-	return *cfg
 }
 
 func startHTTPServer(mux *http.ServeMux, idleConnectionsClosed chan struct{}) {
