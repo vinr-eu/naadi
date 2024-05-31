@@ -33,10 +33,10 @@ func NotifyEvent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate a new ID by finding the highest ID and incrementing it
-	newID := int64(len(event.Store))
+	newOffset := int64(len(event.Store))
 
 	// Store the new event and idempotency key
-	event.Store[newID] = entity
+	event.Store[newOffset] = entity
 	event.IdempotencyKeys[idempotencyKey] = true
 
 	w.WriteHeader(http.StatusNoContent)
